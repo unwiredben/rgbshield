@@ -1,0 +1,229 @@
+<html>
+<head>
+<title>HTINK RGB Shield</title>
+<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print">    
+<!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+</head>
+<body>
+<div class="container" style="margin-top:20px">
+
+<h1>RGB LED Shield</h1>
+<p>a Ben Combee/HTINK project</p>
+<hr/>
+
+<div class="span-18 last">
+<p><object width="425" height="344"><param name="movie" value="http://www.youtube-nocookie.com/v/lj_V7uFtUAA&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube-nocookie.com/v/lj_V7uFtUAA&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object></p>
+
+<p>This Arduino-compatible shield uses three TI TLC5940 PWM LED driver
+ships to drive a 4x4 array of RGB LEDs.  Each color is controlled by a
+different chip so you can adjust the reference resistors for the
+appropriate current.  This also includes mounting positions for for
+three general-purpose buttons that are connected to ground, and a
+reset button.  The TLC5940 chips are not directly connected to any
+Arduino pins, but a header is provided for you to make a manual
+connection depending on the needs of your sketch.</p>
+
+<p>This board is a version of the circuit used at the first HTINK
+workshop on March 14th, 2009 at Bug Labs in New York City.</p>
+
+<p>If you'd like to build one, you can get 
+<a href="http://www.seeedstudio.com/depot/rgb-led-shield-v14-kit-p-430.html">a full kit from Seeed Studio for $35</a>.
+They also sell just the
+<a 
+href="http://www.seeedstudio.com/depot/arduinocompatible-rgb-led-shield-pcb-v14-p-342.html">PC board for $6.50</a>.</p>
+
+<hr/>
+
+<h2>Programming the RGB LED Shield</h2>
+
+<p>To program your Arduino to control the RGB LED shield, you
+first need to install the tlc5490arduino library from <a
+href="http://code.google.com/p/tlc5940arduino/">http://code.google.com/p/tlc5940arduino/</a>.
+Do this by downloading the ZIP file from the site, unpacking the
+TLC5490 folder, and putting it into your Arduino IDE's
+hardware/libraries folder.  You'll then need to modify the
+tlc_config.h file to change the line</p>
+
+<pre>#define NUM_TLCS    1</pre>
+
+<p>to read</p>
+
+<pre>#define NUM_TLCS    3</pre>
+
+<p>since there are three TLC5490 ICs in this circuit connected in
+series.</p>
+
+<p>Here are a few example sketches that will use this library
+to make different patterns.</p>
+
+<ul>
+<li><a href="TLC_wavy.pde">TLC_wavy.pde</a>, Eric Moore
+<li><a href="TLC_box_1.pde">TLC_box_1.pde</a>, Ben Combee
+<li><a href="TLC_box_2.pde">TLC_box_2.pde</a>, Ben Combee
+<li><a href="TLC_arrows2.pde">TLC_arrows2.pde</a>, Ben Combee
+</ul>
+
+<p>On the shield, the four LEDs at the corners are labeled with their
+X,Y coordinates: "1,1", "1,4", "4,1", and "4,4".  The formula to turn
+a coordinate into a LED number is <dfn>(X - 1 + (Y - 1) *
+4)</dfn>.</a>
+
+<hr/>
+
+<h2>Version 1.4</h2>
+
+<p>This version has some major changes from the original 1.1 board.
+
+<ul>
+
+<li>Fixed the DCPRG signal.  In the 1.1 shield, this was tied to
+GND instead of VCC.  This prevents you from loading dot correction
+information into the TLC chips.</li>
+
+<li>Added a 10K resistor between BLANK and VCC.  This pulls up the
+BLANK line when the Arduino isn't asserting it, keeping the LEDs from
+lighting when there's no control signals (like during reset).</li>
+
+<li>Added a default header parallel to the TLC signal header so you
+can just use jumper wires to give the shield a default wiring hookup.
+You also can populate this with a 2x8 header and then use plastic
+jumpers for this.</li>
+
+<li>Disconnected the power net for the LEDs from the board VCC and
+provide a two pin connector to connect them together.  This would
+allow running the LEDs at a different voltage if desired.</li>
+
+<li>The GSCLK, BLANK, and XLAT signals are now all hard-wired to Arduino
+pins D3, D10, and D9 respectively.  This is because the TLC5940
+library uses those pins for their special timer properties, so they
+can't be reassigned.</li>
+
+<li>Added an 2x4 output header that allows chaining a second board to
+the first one, with all the TLC5940 control pins, power, and ground
+provided.</li>
+
+<li>Eliminated the extra holes that were provided to wire up signals
+and replaces them with silkscreen labels for the Arduino signals.
+
+<li>All of the resistors are moved to the edge of the board, making it
+easy to hook up potentiometers to figure out the brightness settings
+for each channel</li>
+
+<li>All ICs and resistors are labeled with the color channel they
+control.</li>
+
+<li>ERRATA: Vled and Vcc are labeled backwards on JP11.  Since you 
+usually just connect these together, there's no real problem, but 
+if you want to power the LEDs using a separate voltage source, connect
+to the proper pin.</li>
+
+<li>ERRATA: The GSCLK and BLANK labels are reversed on the
+Arduino shield connector.  The labels on the piggyback connector,
+JP21, are correct.</li>
+
+</ul>
+
+<p><a href="RGB_LED_Shield_1.4.zip">RGB_LED_Shield_1.4.zip</a> -
+includes schematic, board image, and design files for Eagle CAD</p>
+
+<p><a href="RGB LED 1.4.png"><img src="RGB LED 1.4.png" width="600"
+alt="PC board layout"></a></p>
+
+<p><a href="http://www.flickr.com/photos/unwiredben/3591080419/in/set-72157615123415471/"
+><img src="http://farm4.static.flickr.com/3598/3591080419_76957837a2.jpg" alt="Populated v1.4 board"></a></p>
+
+<h3>Parts List</h3>
+<ul>
+<li>16 common-anode RGB LEDs (LED11-LED44)</li>
+<li>3 TI TLC5940N LED driver ICs (IC1, IC2, IC3)</li>
+<li>3 28-pin DIP IC sockets</li>
+<li>3 2K ohm resistors (R1, R2, R3)</li>
+<li>1 10K ohm resistor (R4)</li>
+<li>2 1x8 female wirewrap headers</li>
+<li>2 1x6 female wirewrap headers</li>
+<li>1 2x5 male header</li>
+<li>1 2x4 male header</li>
+<li>1 1x2 male header</li>
+<li>6 jumpers for connecting adjacent pins</li>
+<li>4 Omrom-style SPST momentary switches</li>
+<li>3 0.1uF ceramic capacitors</li>
+</ul>
+
+<p><a rel="license"
+href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative
+Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png"
+/></a><br /><span xmlns:dc="http://purl.org/dc/elements/1.1/"
+property="dc:title">HTINK RGB Shield 1.4</span>
+by <a xmlns:cc="http://creativecommons.org/ns#"
+href="http://combee.net/rgbshield" property="cc:attributionName"
+rel="cc:attributionURL">Ben Combee</a> is licensed under
+a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative
+Commons Attribution-Share Alike 3.0 United States License</a>.</p>
+
+<hr/>
+
+<h2>Version 1.3</h2>
+
+<p>This is the same as version 1.4, but with a bug that reversed two
+of the headers.  This bug actually was in boards going back to 1.0,
+but it didn't matter before because the control signals were routed
+externally.  The 1.3 boards can be used with alternative form-factor
+Arduino boards where you wire on a breadboard, but they can't plug
+into an Arduino board as a shield.</p>
+
+<p>To wire this to an Arduino board, here's the wiring pattern you need:</p>
+
+<ul>
+<li>D3 on Arduino goes to D11/SOUT on shield.
+<li>D9 on Arduino goes to D1/TX on shield.
+<li>D10 on Arduino goes to D2/SW1 on shield
+<li>D11 on Arduino goes to D3/GSCLK on shield
+<li>D13 on Arduino goes to D5 on shield
+<li>GND on Arduino goes to GND pin on shield (the one next to +5V)
+<li>+5V on Arduino goes to +5V on shield
+</ul>
+
+<hr/>
+
+<h2>Version 1.2</h2>
+
+<p>This is a revised version of the 1.1 board with several changes we
+discovered while assembling and using that version.  It never went
+into production.</p>
+
+<hr/>
+
+<h2>Version 1.1</h2>
+
+<p>This board was produced in a limited run by Seeed Studio as part of
+their Propaganda program.  I documented the build-out process with
+several YouTube videos and some posts
+on <a href="http://unwiredben.livejournal.com/tag/rgg+led+shield">The
+Life Unwired</a>.</p>
+
+<p><a href="RGB_LED_Shield_1.1.zip">RGB_LED_Shield_1.1.zip</a> -
+includes schematic, board image, and design files for Eagle CAD</p>
+
+<p><a href="RGB LED 1.1.png"><img src="RGB LED 1.1.png" width="600" alt="PC board layout"></a></p>
+
+<p><a rel="license"
+href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative
+Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png"
+/></a><br /><span xmlns:dc="http://purl.org/dc/elements/1.1/"
+property="dc:title">HTINK RGB Shield 1.1</span>
+by <a xmlns:cc="http://creativecommons.org/ns#"
+href="http://combee.net/rgbshield" property="cc:attributionName"
+rel="cc:attributionURL">Ben Combee</a> is licensed under
+a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative
+Commons Attribution-Share Alike 3.0 United States License</a>.</p>
+
+</div>
+</div>
+
+</body>
+</html>
